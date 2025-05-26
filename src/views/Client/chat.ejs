@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat con tu Entrenador</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #121212;
+            --dark: #1E1E1E;
+            --gray: #2D2D2D;
+            --light: #F5F5F5;
+            --accent: #E74C3C;
+            --primary: #3498DB;
+            --primary-hover: #2980B9;
+            --success: #2ECC71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--light);
+            padding: 2rem;
+            line-height: 1.6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--success);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #chat {
+            flex: 1;
+            background: var(--dark);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            position: relative;
+        }
+
+        .message-sent {
+            align-self: flex-end;
+            background-color: var(--primary);
+            color: white;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .message-received {
+            align-self: flex-start;
+            background-color: var(--gray);
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 0.25rem;
+            text-align: right;
+        }
+
+        #formulario {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        #mensaje {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--gray);
+            background: var(--dark);
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        #formulario button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            background-color: var(--success);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #formulario button:hover {
+            background-color: #27AE60;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+
+            #formulario button span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h2><i class="fas fa-comments"></i> Chat con tu Entrenador</h2>
+        </div>
+
+        <div id="chat">
+            <% mensajes.forEach(msg=> { %>
+                <div class="message <%= msg.remitenteId.equals(remitenteId) ? 'message-sent' : 'message-received' %>">
+                    <span class="message-sender">
+                        <%= msg.remitenteId.equals(remitenteId) ? 'Tú' : 'Entrenador' %>
+                    </span>
+                    <%= msg.contenido %>
+                        <div class="message-time">
+                            <%= new Date(msg.fecha).toLocaleTimeString([], {hour: '2-digit' , minute:'2-digit'}) %>
+                        </div>
+                </div>
+                <% }) %>
+        </div>
+
+        <form id="formulario">
+            <input type="text" id="mensaje" placeholder="Escribe un mensaje..." required autocomplete="off" />
+            <button type="submit"><i class="fas fa-paper-plane"></i> <span>Enviar</span></button>
+        </form>
+    </div>
+
+    <script>
+        const socket = io();
+        const remitenteId = "<%= remitenteId %>";
+        const destinatarioId = "<%= destinatarioId %>";
+        const roomId = "<%= roomId %>";
+
+        socket.emit('joinRoom', roomId);
+
+        const chat = document.getElementById('chat');
+        const formulario = document.getElementById('formulario');
+        const mensajeInput = document.getElementById('mensaje');
+
+        formulario.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const contenido = mensajeInput.value.trim();
+            if (!contenido) return;
+
+            const data = {
+                remitenteId,
+                destinatarioId,
+                contenido,
+                roomId,
+                remitenteNombre: "Tú"
+            };
+            socket.emit('chatMessage', data);
+
+            // Mostrar el mensaje propio
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-sent';
+            messageDiv.innerHTML = `
+                <span class="message-sender">Tú</span>
+                ${contenido}
+                <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+            `;
+            chat.appendChild(messageDiv);
+            chat.scrollTop = chat.scrollHeight;
+
+            mensajeInput.value = '';
+            mensajeInput.focus();
+        });
+
+        socket.on('mensajeRecibido', (msg) => {
+            if (msg.remitenteId === remitenteId) return;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message message-received';
+            messageDiv.innerHTML = `
+                <span class="message-sender">Entrenador</span>
+                ${msg.contenido}
+                <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+            `;
+            chat.appendChild(messageDiv);
+            chat.scrollTop = chat.scrollHeight;
+        });
+
+        // Auto-focus al cargar
+        mensajeInput.focus();
+    </script>
+</body>
+
+</html>

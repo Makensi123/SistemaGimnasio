@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Mi Perfil</h1>
+    <p><strong>Objetivo:</strong>
+        <%= cliente.objetivo || 'No definido' %>
+    </p>
+    <p><strong>Nivel:</strong>
+        <%= cliente.nivel || 'No definido' %>
+    </p>
+    <p><strong>Observaciones:</strong>
+        <%= cliente.observaciones || 'Ninguna' %>
+    </p>
+
+    <% if (cliente.entrenadorId) { %>
+        <h3>Entrenador asignado</h3>
+        <p><strong>Nombre:</strong>
+            <%= cliente.entrenadorId.usuarioId.nombre %>
+                <%= cliente.entrenadorId.usuarioId.apellido %>
+        </p>
+        <p><strong>Correo:</strong>
+            <%= cliente.entrenadorId.usuarioId.correo %>
+        </p>
+        <p><strong>Teléfono:</strong>
+            <%= cliente.entrenadorId.usuarioId.telefono %>
+        </p>
+        <% } else { %>
+            <p>No tienes un entrenador asignado todavía.</p>
+            <% } %>
+</body>
+
+</html>

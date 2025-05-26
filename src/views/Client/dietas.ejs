@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Mis Dietas - <%= cliente.usuarioId.nombre %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #121212;
+            --dark: #1E1E1E;
+            --gray: #2D2D2D;
+            --light: #F5F5F5;
+            --accent: #E74C3C;
+            --primary: #3498DB;
+            --success: #2ECC71;
+            --success-light: rgba(46, 204, 113, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--light);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--success);
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        h1 i {
+            margin-right: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--dark);
+            border-radius: 0.5rem;
+            border: 1px dashed var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: #AAA;
+        }
+
+        .dieta-card {
+            background: var(--dark);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .dieta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .dieta-title {
+            font-size: 1.4rem;
+            color: var(--success);
+            margin: 0;
+        }
+
+        .dieta-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+        }
+
+        .status-inactive {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--accent);
+        }
+
+        .dieta-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .dieta-meta p {
+            margin: 0;
+        }
+
+        .dieta-meta strong {
+            color: var(--light);
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .comidas-section {
+            margin-top: 1.5rem;
+        }
+
+        .comidas-section h3 {
+            font-size: 1.2rem;
+            color: var(--light);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .comida-item {
+            background: var(--black);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--success);
+        }
+
+        .comida-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .comida-type {
+            font-weight: 600;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+        }
+
+        .comida-type i {
+            margin-right: 0.5rem;
+        }
+
+        .comida-calorias {
+            background: var(--success-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            color: var(--success);
+        }
+
+        .comida-desc {
+            color: #DDD;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .dieta-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-utensils"></i> Mis Dietas</h1>
+        </div>
+
+        <% if (dietasCliente.length> 0) { %>
+            <% dietasCliente.forEach(dieta=> { %>
+                <div class="dieta-card">
+                    <div class="dieta-header">
+                        <h2 class="dieta-title">
+                            <%= dieta.nombre %>
+                        </h2>
+                        <span
+                            class="dieta-status <%= dieta.estado === 'Activa' ? 'status-active' : 'status-inactive' %>">
+                            <%= dieta.estado %>
+                        </span>
+                    </div>
+
+                    <div class="dieta-meta">
+                        <div>
+                            <strong>Descripción</strong>
+                            <p>
+                                <%= dieta.descripcion || 'Sin descripción' %>
+                            </p>
+                        </div>
+                        <div>
+                            <strong>Categoría</strong>
+                            <p>
+                                <%= dieta.categoria %>
+                            </p>
+                        </div>
+                        <div>
+                            <strong>Fecha inicio</strong>
+                            <p>
+                                <%= dieta.fechaInicio ? dieta.fechaInicio.toLocaleDateString() : 'No definido' %>
+                            </p>
+                        </div>
+                        <div>
+                            <strong>Fecha fin</strong>
+                            <p>
+                                <%= dieta.fechaFin ? dieta.fechaFin.toLocaleDateString() : 'No definido' %>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="comidas-section">
+                        <h3><i class="fas fa-utensils"></i> Plan de comidas</h3>
+
+                        <% dieta.comidas.forEach(comida=> { %>
+                            <div class="comida-item">
+                                <div class="comida-header">
+                                    <span class="comida-type">
+                                        <% if (comida.tipoComida==='Desayuno' ) { %>
+                                            <i class="fas fa-sun"></i>
+                                            <% } else if (comida.tipoComida==='Almuerzo' ) { %>
+                                                <i class="fas fa-utensils"></i>
+                                                <% } else if (comida.tipoComida==='Cena' ) { %>
+                                                    <i class="fas fa-moon"></i>
+                                                    <% } else { %>
+                                                        <i class="fas fa-apple-alt"></i>
+                                                        <% } %>
+                                                            <%= comida.tipoComida %>
+                                    </span>
+                                    <span class="comida-calorias">
+                                        <%= comida.caloriasEstimadas %> kcal
+                                    </span>
+                                </div>
+                                <p class="comida-desc">
+                                    <%= comida.descripcion %>
+                                </p>
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+                <% }) %>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <i class="fas fa-utensils"></i>
+                            <p>No tienes dietas asignadas actualmente</p>
+                        </div>
+                        <% } %>
+    </div>
+</body>
+
+</html>

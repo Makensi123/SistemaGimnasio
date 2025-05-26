@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Rutina: <%= rutina.nombre %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #121212;
+            --dark: #1E1E1E;
+            --gray: #2D2D2D;
+            --light: #F5F5F5;
+            --accent: #E74C3C;
+            --accent-hover: #C0392B;
+            --primary: #3498DB;
+            --primary-hover: #2980B9;
+            --success: #2ECC71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--light);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray);
+            padding-bottom: 0.5rem;
+        }
+
+        .rutina-info {
+            background: var(--dark);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--gray);
+        }
+
+        .rutina-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .rutina-meta p {
+            margin: 0;
+        }
+
+        .rutina-meta strong {
+            color: var(--light);
+        }
+
+        .dia-section {
+            margin-bottom: 2.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .ejercicio-card {
+            background: var(--dark);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray);
+            position: relative;
+        }
+
+        .ejercicio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--light);
+            margin-bottom: 0.5rem;
+        }
+
+        .ejercicio-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .ejercicio-meta span {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+
+        .ejercicio-desc {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--gray);
+            border: 1px solid var(--gray);
+            border-radius: 0.5rem;
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .rutina-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1><i class="fas fa-dumbbell"></i> Detalles de Rutina: <%= rutina.nombre %>
+        </h1>
+        <a href="/volver/volverRutina" class="btn"><i class="fas fa-arrow-left"></i> Volver</a>
+
+        <div class="rutina-info">
+            <div class="rutina-meta">
+                <p><strong>Descripción:</strong>
+                    <%= rutina.descripcion %>
+                </p>
+                <p><strong>Duración:</strong>
+                    <%= rutina.duracionSemanas %> semanas
+                </p>
+                <p><strong>Fecha Inicio:</strong>
+                    <%= rutina.fechaInicio.toISOString().slice(0, 10) %>
+                </p>
+                <p><strong>Fecha Fin:</strong>
+                    <%= rutina.fechaFin.toISOString().slice(0, 10) %>
+                </p>
+            </div>
+        </div>
+
+        <% ejerciciosPorDia.forEach(dia=> { %>
+            <div class="dia-section">
+                <h2><i class="fas fa-calendar-day"></i>
+                    <%= dia.diaSemana %>
+                </h2>
+
+                <% dia.ejercicios.forEach(e=> { %>
+                    <div class="ejercicio-card">
+                        <div class="ejercicio-header">
+                            <div>
+                                <h3>
+                                    <%= e.nombre %>
+                                </h3>
+                                <div class="ejercicio-meta">
+                                    <span><i class="fas fa-tag"></i>
+                                        <%= e.categoria %>
+                                    </span>
+                                    <span><i class="fas fa-layer-group"></i>
+                                        <%= e.tipoEjercicio %>
+                                    </span>
+                                    <span><i class="fas fa-signal"></i>
+                                        <%= e.nivelDificultad %>
+                                    </span>
+                                    <% if (e.musculoPrincipal) { %>
+                                        <span><i class="fas fa-dumbbell"></i>
+                                            <%= e.musculoPrincipal %>
+                                        </span>
+                                        <% } %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <% if (e.descripcion) { %>
+                            <div class="ejercicio-desc">
+                                <p>
+                                    <%= e.descripcion %>
+                                </p>
+                            </div>
+                            <% } %>
+
+                                <% if (e.equipoNecesario) { %>
+                                    <p><strong><i class="fas fa-tools"></i> Equipo:</strong>
+                                        <%= e.equipoNecesario %>
+                                    </p>
+                                    <% } %>
+
+                                        <form
+                                            action="/entrenador/rutinas/<%= rutina._id %>/editar-ejercicio/<%= e._id %>"
+                                            method="POST">
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label>Series</label>
+                                                    <input type="number" name="series" value="<%= e.series %>"
+                                                        required />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Repeticiones</label>
+                                                    <input type="number" name="repeticiones"
+                                                        value="<%= e.repeticiones %>" required />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Descanso (minutos)</label>
+                                                    <input type="number" name="descansoMinutos"
+                                                        value="<%= e.descansoMinutos %>" required />
+                                                </div>
+                                            </div>
+
+                                            <div class="action-buttons">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save"></i> Guardar Cambios
+                                                </button>
+
+                                                <form
+                                                    action="/entrenador/rutinas/<%= rutina._id %>/eliminar-ejercicio/<%= e._id %>"
+                                                    method="POST">
+                                                    <button type="submit" class="btn btn-danger"
+                                                        onclick="return confirm('¿Seguro que quieres eliminar este ejercicio?')">
+                                                        <i class="fas fa-trash"></i> Eliminar Ejercicio
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </form>
+                    </div>
+                    <% }) %>
+            </div>
+            <% }) %>
+    </div>
+</body>
+
+</html>

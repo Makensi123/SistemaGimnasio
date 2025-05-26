@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Rutinas de <%= cliente.usuarioId.nombre %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #121212;
+            --dark: #1E1E1E;
+            --gray: #2D2D2D;
+            --light: #F5F5F5;
+            --accent: #E74C3C;
+            --accent-hover: #C0392B;
+            --primary: #3498DB;
+            --primary-hover: #2980B9;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--black);
+            color: var(--light);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3, h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            border-bottom: 1px solid var(--gray);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+        }
+        
+        .rutina-box {
+            background: var(--dark);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .rutina-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .rutina-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .rutina-meta p {
+            margin: 0;
+        }
+        
+        .rutina-meta strong {
+            color: var(--light);
+        }
+        
+        .dia-box {
+            margin-top: 1.5rem;
+            padding: 1rem 0 1rem 1rem;
+            border-left: 3px solid var(--primary);
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        li {
+            margin-bottom: 1rem;
+        }
+        
+        li > ul {
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--gray);
+        }
+        
+        .ejercicio-item {
+            background: rgba(255,255,255,0.03);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        
+        .ejercicio-title {
+            font-weight: 600;
+            color: var(--light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .ejercicio-details {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        
+        .ejercicio-details span {
+            background: var(--gray);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: var(--accent-hover);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .form-asignar {
+            background: var(--dark);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 2rem;
+            border: 1px solid var(--gray);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--gray);
+            border: 1px solid var(--gray);
+            border-radius: 0.5rem;
+            color: var(--light);
+            font-size: 1rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            background: var(--dark);
+            border-radius: 0.5rem;
+            border: 1px dashed var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 2rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .rutina-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1><i class="fas fa-dumbbell"></i> Rutinas de <%= cliente.usuarioId.nombre + ' ' + cliente.usuarioId.apellido %></h1>
+        <a href="/volver/volverClient" class="btn"><i class="fas fa-arrow-left"></i> Volver</a>
+        <% if (rutinasCliente.length > 0) { %>
+            <% rutinasCliente.forEach(rutina=> { %>
+                <div class="rutina-box">
+                    <div class="rutina-header">
+                        <h2><%= rutina.nombre %></h2>
+                        <form action="/entrenador/clients/<%= cliente._id %>/rutinas/<%= rutina._id %>/quitar" method="POST">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-times"></i> Quitar rutina
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <p><strong>Descripción:</strong> <%= rutina.descripcion || 'Sin descripción' %></p>
+                    
+                    <div class="rutina-meta">
+                        <p><strong>Duración:</strong> <%= rutina.duracionSemanas || 'No definido' %> semanas</p>
+                        <p><strong>Fecha inicio:</strong> <%= rutina.fechaInicio ? rutina.fechaInicio.toLocaleDateString() : 'No definido' %></p>
+                        <p><strong>Fecha fin:</strong> <%= rutina.fechaFin ? rutina.fechaFin.toLocaleDateString() : 'No definido' %></p>
+                        <p><strong>Estado:</strong> <%= rutina.estado || 'No definido' %></p>
+                    </div>
+
+                    <% rutina.ejercicios.forEach(dia=> { %>
+                        <div class="dia-box">
+                            <h3><i class="fas fa-calendar-day"></i> <%= dia.diaSemana %></h3>
+                            <ul>
+                                <% dia.ejercicios.forEach(ej=> {
+                                    const e = ej.ejercicioId;
+                                    %>
+                                    <li class="ejercicio-item">
+                                        <div class="ejercicio-title">
+                                            <%= e.nombre %> - <%= ej.series %> x <%= ej.repeticiones %> (descanso: <%= ej.descansoMinutos %> min)
+                                        </div>
+                                        <div class="ejercicio-details">
+                                            <span><i class="fas fa-tag"></i> <%= e.tipoEjercicio %></span>
+                                            <span><i class="fas fa-signal"></i> <%= e.nivelDificultad %></span>
+                                            <span><i class="fas fa-layer-group"></i> <%= e.categoria %></span>
+                                            <% if (e.musculoPrincipal) { %>
+                                                <span><i class="fas fa-dumbbell"></i> <%= e.musculoPrincipal %></span>
+                                            <% } %>
+                                            <% if (e.equipoNecesario) { %>
+                                                <span><i class="fas fa-tools"></i> <%= e.equipoNecesario %></span>
+                                            <% } %>
+                                        </div>
+                                        <% if (e.descripcion) { %>
+                                            <p style="margin-top: 0.5rem;"><%= e.descripcion %></p>
+                                        <% } %>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                        </div>
+                    <% }) %>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="empty-state">
+                <i class="fas fa-dumbbell"></i>
+                <p>No hay rutinas asignadas a este cliente.</p>
+            </div>
+        <% } %>
+
+        <div class="form-asignar">
+            <h2><i class="fas fa-plus-circle"></i> Asignar nueva rutina</h2>
+            <form action="/entrenador/clients/<%= cliente._id %>/rutinas/asignar" method="POST">
+                <div class="form-group">
+                    <label for="rutinaId">Seleccione una rutina:</label>
+                    <select name="rutinaId" id="rutinaId" required>
+                        <option value="" disabled selected>-- Elige una rutina --</option>
+                        <% rutinasDisponibles.forEach(rutina=> { %>
+                            <option value="<%= rutina._id %>"><%= rutina.nombre %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Asignar rutina
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

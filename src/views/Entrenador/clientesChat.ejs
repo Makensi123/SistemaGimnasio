@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Clientes para chatear</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #121212;
+            --dark: #1E1E1E;
+            --gray: #2D2D2D;
+            --light: #F5F5F5;
+            --accent: #E74C3C;
+            --primary: #3498DB;
+            --primary-hover: #2980B9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--light);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .user-info {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--dark);
+            border-radius: 0.5rem;
+            border: 1px solid var(--gray);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .btn-back:hover {
+            background-color: #3a3a3a;
+        }
+
+        .btn-chat {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-chat:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .clientes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .cliente-card {
+            background: var(--dark);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border: 1px solid var(--gray);
+            transition: all 0.3s ease;
+        }
+
+        .cliente-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .cliente-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .cliente-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .cliente-meta {
+            margin-bottom: 1rem;
+        }
+
+        .cliente-meta p {
+            margin: 0.5rem 0;
+        }
+
+        .cliente-meta strong {
+            color: var(--light);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--dark);
+            border-radius: 0.5rem;
+            border: 1px dashed var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: #AAA;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .clientes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-comments"></i> Clientes para chatear</h1>
+            <a href="/volver" class="btn btn-back"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+
+        <div class="user-info">
+            <p><i class="fas fa-user"></i> Usuario: <strong>
+                    <%= usuario.nombre || usuario.email || 'Usuario' %>
+                </strong></p>
+        </div>
+
+        <% if (clientes.length===0) { %>
+            <div class="empty-state">
+                <i class="fas fa-user-slash"></i>
+                <p>No hay clientes asignados</p>
+            </div>
+            <% } else { %>
+                <div class="clientes-grid">
+                    <% clientes.forEach(cliente=> { %>
+                        <div class="cliente-card">
+                            <div class="cliente-header">
+                                <div class="cliente-name">
+                                    <%= cliente.usuarioId?.nombre || 'N/A' %>
+                                        <%= cliente.usuarioId?.apellido || '' %>
+                                </div>
+                                <a class="btn btn-chat" href="/entrenador/chat/<%= cliente._id %>">
+                                    <i class="fas fa-comment-dots"></i> Chatear
+                                </a>
+                            </div>
+
+                            <div class="cliente-meta">
+                                <% if (cliente.objetivo) { %>
+                                    <p><strong><i class="fas fa-bullseye"></i> Objetivo:</strong>
+                                        <%= cliente.objetivo %>
+                                    </p>
+                                    <% } %>
+
+                                        <% if (cliente.nivel) { %>
+                                            <p><strong><i class="fas fa-signal"></i> Nivel:</strong>
+                                                <%= cliente.nivel %>
+                                            </p>
+                                            <% } %>
+                            </div>
+                        </div>
+                        <% }); %>
+                </div>
+                <% } %>
+    </div>
+</body>
+
+</html>

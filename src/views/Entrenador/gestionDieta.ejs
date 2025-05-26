@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Dietas de <%= cliente.usuarioId.nombre + ' ' + cliente.usuarioId.apellido %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #121212;
+            --dark: #1E1E1E;
+            --gray: #2D2D2D;
+            --light: #F5F5F5;
+            --accent: #E74C3C;
+            --accent-hover: #C0392B;
+            --success: #2ECC71;
+            --success-hover: #27AE60;
+            --primary: #3498DB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--light);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-back {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .btn-back:hover {
+            background-color: #3a3a3a;
+        }
+
+        .btn-danger {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: var(--success-hover);
+        }
+
+        .dieta-box {
+            background: var(--dark);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .dieta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .dieta-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .dieta-meta p {
+            margin: 0;
+        }
+
+        .dieta-meta strong {
+            color: var(--light);
+        }
+
+        .comida-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-left: 3px solid var(--success);
+            background: rgba(46, 204, 113, 0.05);
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .comida-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .comida-details p {
+            margin: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            background: var(--dark);
+            border-radius: 0.5rem;
+            border: 1px dashed var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        .empty-state i {
+            font-size: 2rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .form-asignar {
+            background: var(--dark);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 2rem;
+            border: 1px solid var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--gray);
+            border: 1px solid var(--gray);
+            border-radius: 0.5rem;
+            color: var(--light);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-active {
+            color: var(--success);
+        }
+
+        .status-inactive {
+            color: #F39C12;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .dieta-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-utensils"></i> Dietas de <%= cliente.usuarioId.nombre + ' ' +
+                    cliente.usuarioId.apellido %>
+            </h1>
+            <a href="/volver/volverClient" class="btn btn-back"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+
+        <% if (dietasCliente.length> 0) { %>
+            <% dietasCliente.forEach(dieta=> { %>
+                <div class="dieta-box">
+                    <div class="dieta-header">
+                        <h2>
+                            <%= dieta.nombre %>
+                        </h2>
+                        <form action="/entrenador/clients/<%= cliente._id %>/dietas/<%= dieta._id %>/quitar"
+                            method="POST">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-times"></i> Quitar dieta
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="dieta-meta">
+                        <p><strong>Categoría:</strong>
+                            <%= dieta.categoria %>
+                        </p>
+                        <p><strong>Estado:</strong>
+                            <span class="<%= dieta.estado === 'Activa' ? 'status-active' : 'status-inactive' %>">
+                                <i class="fas fa-circle"></i>
+                                <%= dieta.estado %>
+                            </span>
+                        </p>
+                        <p><strong>Fecha inicio:</strong>
+                            <%= dieta.fechaInicio ? dieta.fechaInicio.toLocaleDateString() : 'No definido' %>
+                        </p>
+                        <p><strong>Fecha fin:</strong>
+                            <%= dieta.fechaFin ? dieta.fechaFin.toLocaleDateString() : 'No definido' %>
+                        </p>
+                    </div>
+
+                    <p><strong>Descripción:</strong>
+                        <%= dieta.descripcion || 'Sin descripción' %>
+                    </p>
+
+                    <h3><i class="fas fa-utensils"></i> Comidas</h3>
+                    <% dieta.comidas.forEach(comida=> { %>
+                        <div class="comida-box">
+                            <h4><i class="fas fa-<%= comida.tipoComida === 'Desayuno' ? 'sun' : 
+                                                  comida.tipoComida === 'Almuerzo' ? 'utensils' : 
+                                                  comida.tipoComida === 'Cena' ? 'moon' : 
+                                                  'apple-alt' %>"></i>
+                                <%= comida.tipoComida %>
+                            </h4>
+                            <div class="comida-details">
+                                <p><strong>Descripción:</strong>
+                                    <%= comida.descripcion %>
+                                </p>
+                                <p><strong>Calorías:</strong>
+                                    <%= comida.caloriasEstimadas %> kcal
+                                </p>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+                <% }) %>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <i class="fas fa-utensils"></i>
+                            <p>No hay dietas asignadas a este cliente.</p>
+                        </div>
+                        <% } %>
+
+                            <div class="form-asignar">
+                                <h2><i class="fas fa-plus-circle"></i> Asignar nueva dieta</h2>
+                                <form action="/entrenador/clients/<%= cliente._id %>/dietas/asignar" method="POST">
+                                    <div class="form-group">
+                                        <label for="dietaId">Seleccione una dieta:</label>
+                                        <select name="dietaId" id="dietaId" required>
+                                            <option value="" disabled selected>-- Elige una dieta --</option>
+                                            <% dietasDisponibles.forEach(dieta=> { %>
+                                                <option value="<%= dieta._id %>">
+                                                    <%= dieta.nombre %>
+                                                </option>
+                                                <% }) %>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-check"></i> Asignar dieta
+                                    </button>
+                                </form>
+                            </div>
+    </div>
+</body>
+
+</html>

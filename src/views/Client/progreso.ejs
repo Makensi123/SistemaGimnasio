@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Progreso Físico</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --dark: #1a1a1a;
+      --darker: #121212;
+      --gray: #2d2d2d;
+      --light: #f5f5f5;
+      --primary: #3498db;
+      --primary-hover: #2980b9;
+      --danger: #e74c3c;
+      --danger-hover: #c0392b;
+      --success: #2ecc71;
+      --success-hover: #27ae60;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--darker);
+      color: var(--light);
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 2rem;
+      font-size: 2.2rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--dark);
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    form {
+      margin-bottom: 2.5rem;
+      background: var(--gray);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--light);
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--dark);
+      border: 1px solid #444;
+      border-radius: 0.3rem;
+      color: var(--light);
+      font-size: 1rem;
+      transition: border 0.3s;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+      background: var(--gray);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid #444;
+    }
+
+    th {
+      background-color: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .actions button {
+      margin-top: 0;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--danger-hover);
+    }
+
+    .btn-success {
+      background-color: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: var(--success-hover);
+    }
+
+    .no-data {
+      text-align: center;
+      color: #aaa;
+      padding: 2rem;
+      background: var(--gray);
+      border-radius: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    .modal-content {
+      background-color: var(--dark);
+      margin: 10% auto;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 0.5rem;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      font-size: 1.5rem;
+      color: #aaa;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .close:hover {
+      color: var(--light);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .actions {
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1><i class="fas fa-chart-line"></i> Registrar y Ver Progreso Físico</h1>
+
+  <div class="container">
+    <!-- FORMULARIO -->
+    <form action="/client/progreso" method="POST">
+      <label for="pesoKg"><i class="fas fa-weight"></i> Peso (kg):</label>
+      <input type="number" step="0.1" name="pesoKg" required>
+
+      <label for="alturaCm"><i class="fas fa-ruler-vertical"></i> Altura (cm):</label>
+      <input type="number" name="alturaCm" required>
+
+      <label for="grasaCorporal"><i class="fas fa-percentage"></i> Grasa Corporal (%):</label>
+      <input type="number" step="0.1" name="grasaCorporal">
+
+      <label for="observaciones"><i class="fas fa-notes-medical"></i> Observaciones:</label>
+      <textarea name="observaciones" rows="3"></textarea>
+
+      <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Registrar Progreso</button>
+    </form>
+
+    <!-- HISTORIAL -->
+    <% if (historial.length> 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th><i class="far fa-calendar"></i> Fecha</th>
+            <th><i class="fas fa-weight"></i> Peso</th>
+            <th><i class="fas fa-ruler-vertical"></i> Altura</th>
+            <th><i class="fas fa-calculator"></i> IMC</th>
+            <th><i class="fas fa-percentage"></i> Grasa</th>
+            <th><i class="fas fa-notes-medical"></i> Observaciones</th>
+            <th><i class="fas fa-cog"></i> Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% historial.forEach(p=> { %>
+            <tr>
+              <td>
+                <%= new Date(p.fechaRegistro).toLocaleDateString() %>
+              </td>
+              <td>
+                <%= p.pesoKg %> kg
+              </td>
+              <td>
+                <%= p.alturaCm %> cm
+              </td>
+              <td>
+                <%= p.imc %>
+              </td>
+              <td>
+                <%= p.grasaCorporal ?? '-' %>
+              </td>
+              <td>
+                <%= p.observaciones ?? '-' %>
+              </td>
+              <td class="actions">
+                <button class="btn-success" data-id="<%= p._id %>" data-peso="<%= p.pesoKg %>"
+                  data-altura="<%= p.alturaCm %>" data-grasa="<%= p.grasaCorporal ?? '' %>"
+                  data-obs="<%= p.observaciones ?? '' %>" onclick="openModal(this)">
+                  <i class="fas fa-edit"></i> Editar
+                </button>
+                <form action="/client/progreso/<%= p._id %>/delete" method="POST"
+                  onsubmit="return confirm('¿Seguro que deseas eliminar este progreso?');">
+                  <button type="submit" class="btn-danger"><i class="fas fa-trash"></i> Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+        <div class="no-data">
+          <i class="fas fa-database" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+          <p>No hay registros de progreso aún.</p>
+        </div>
+        <% } %>
+  </div>
+
+  <!-- MODAL PARA EDITAR -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <form id="editForm" method="POST">
+        <label for="pesoKg"><i class="fas fa-weight"></i> Peso (kg):</label>
+        <input type="number" step="0.1" name="pesoKg" id="editPeso" required>
+
+        <label for="alturaCm"><i class="fas fa-ruler-vertical"></i> Altura (cm):</label>
+        <input type="number" name="alturaCm" id="editAltura" required>
+
+        <label for="grasaCorporal"><i class="fas fa-percentage"></i> Grasa Corporal (%):</label>
+        <input type="number" step="0.1" name="grasaCorporal" id="editGrasa">
+
+        <label for="observaciones"><i class="fas fa-notes-medical"></i> Observaciones:</label>
+        <textarea name="observaciones" rows="3" id="editObs"></textarea>
+
+        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar Cambios</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openModal(button) {
+      document.getElementById('editPeso').value = button.dataset.peso;
+      document.getElementById('editAltura').value = button.dataset.altura;
+      document.getElementById('editGrasa').value = button.dataset.grasa;
+      document.getElementById('editObs').value = button.dataset.obs;
+
+      document.getElementById('editForm').action = `/client/progreso/${button.dataset.id}/update`;
+      document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('editModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+  </script>
+</body>
+
+</html>

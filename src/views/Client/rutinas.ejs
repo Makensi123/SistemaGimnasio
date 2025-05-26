@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Rutinas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #121212;
+            --dark: #1E1E1E;
+            --gray: #2D2D2D;
+            --light: #F5F5F5;
+            --primary: #3498DB;
+            --primary-hover: #2980B9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--light);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            border-bottom: 1px solid var(--gray);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+        }
+
+        .rutina-box {
+            background: var(--dark);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .info {
+            margin-bottom: 0.75rem;
+        }
+
+        .info strong {
+            color: var(--light);
+        }
+
+        .dia-box {
+            margin-top: 1.5rem;
+            padding: 1rem 0 1rem 1rem;
+            border-left: 3px solid var(--primary);
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin-bottom: 1rem;
+        }
+
+        li>ul {
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--gray);
+        }
+
+        .ejercicio-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .ejercicio-title {
+            font-weight: 600;
+            color: var(--light);
+            margin-bottom: 0.5rem;
+        }
+
+        .ejercicio-details {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .ejercicio-details span {
+            background: var(--gray);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            background: var(--dark);
+            border-radius: 0.5rem;
+            border: 1px dashed var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 2rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1><i class="fas fa-dumbbell"></i> Rutinas de <%= cliente.usuarioId.nombre + ' ' + cliente.usuarioId.apellido %>
+    </h1>
+
+    <% if (rutinasCliente.length> 0) { %>
+        <% rutinasCliente.forEach(rutina=> { %>
+            <div class="rutina-box">
+                <h2>
+                    <i class="fas fa-running"></i>
+                    <%= rutina.nombre %>
+                </h2>
+
+                <p class="info"><strong><i class="fas fa-align-left"></i> Descripción:</strong>
+                    <%= rutina.descripcion || 'Sin descripción' %>
+                </p>
+                <p class="info"><strong><i class="fas fa-calendar-week"></i> Duración:</strong>
+                    <%= rutina.duracionSemanas || 'No definido' %> semanas
+                </p>
+                <p class="info"><strong><i class="fas fa-calendar-check"></i> Inicio:</strong>
+                    <%= rutina.fechaInicio ? rutina.fechaInicio.toLocaleDateString() : 'No definido' %>
+                </p>
+                <p class="info"><strong><i class="fas fa-calendar-times"></i> Fin:</strong>
+                    <%= rutina.fechaFin ? rutina.fechaFin.toLocaleDateString() : 'No definido' %>
+                </p>
+                <p class="info"><strong><i class="fas fa-info-circle"></i> Estado:</strong>
+                    <%= rutina.estado || 'No definido' %>
+                </p>
+
+                <% rutina.ejercicios.forEach(dia=> { %>
+                    <div class="dia-box">
+                        <h3>
+                            <i class="fas fa-calendar-day"></i>
+                            <%= dia.diaSemana %>
+                        </h3>
+                        <ul>
+                            <% dia.ejercicios.forEach(ej=> {
+                                const e = ej.ejercicioId;
+                                %>
+                                <li class="ejercicio-item">
+                                    <div class="ejercicio-title">
+                                        <%= e.nombre %> - <%= ej.series %> x <%= ej.repeticiones %> (descanso: <%=
+                                                        ej.descansoMinutos %> min)
+                                    </div>
+                                    <div class="ejercicio-details">
+                                        <span><i class="fas fa-tag"></i>
+                                            <%= e.tipoEjercicio %>
+                                        </span>
+                                        <span><i class="fas fa-signal"></i>
+                                            <%= e.nivelDificultad %>
+                                        </span>
+                                        <span><i class="fas fa-layer-group"></i>
+                                            <%= e.categoria %>
+                                        </span>
+                                        <% if (e.musculoPrincipal) { %>
+                                            <span><i class="fas fa-dumbbell"></i>
+                                                <%= e.musculoPrincipal %>
+                                            </span>
+                                            <% } %>
+                                                <% if (e.equipoNecesario) { %>
+                                                    <span><i class="fas fa-tools"></i>
+                                                        <%= e.equipoNecesario %>
+                                                    </span>
+                                                    <% } %>
+                                    </div>
+                                    <% if (e.descripcion) { %>
+                                        <p style="margin-top: 0.5rem;">
+                                            <%= e.descripcion %>
+                                        </p>
+                                        <% } %>
+                                </li>
+                                <% }) %>
+                        </ul>
+                    </div>
+                    <% }) %>
+            </div>
+            <% }) %>
+                <% } else { %>
+                    <div class="empty-state">
+                        <i class="fas fa-dumbbell"></i>
+                        <p>No tienes rutinas asignadas por el momento.</p>
+                    </div>
+                    <% } %>
+</body>
+
+</html>

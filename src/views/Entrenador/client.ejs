@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gestión de Clientes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #121212;
+            --dark: #1E1E1E;
+            --gray: #2D2D2D;
+            --light: #F5F5F5;
+            --accent: #E74C3C;
+            --accent-hover: #C0392B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--black);
+            color: var(--light);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--light);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--accent);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            margin: 30px 0 20px;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .clientes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .cliente-card {
+            background: var(--dark);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            text-align: center;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray);
+        }
+        
+        .cliente-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border-color: var(--accent);
+        }
+        
+        .cliente-img {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            background-color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light);
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .cliente-nombre {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--light);
+            margin-bottom: 5px;
+        }
+        
+        .cliente-info {
+            font-size: 0.9rem;
+            color: #AAA;
+            margin-top: 5px;
+        }
+        
+        /* Modal styling */
+        .modal-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-bg.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--dark);
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            padding: 30px;
+            border: 1px solid var(--gray);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #777;
+            transition: color 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: var(--accent);
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: var(--light);
+        }
+        
+        .modal-section {
+            margin-bottom: 25px;
+            background: var(--black);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .modal-section h3 {
+            margin-bottom: 15px;
+            color: var(--light);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--gray);
+            padding-bottom: 10px;
+        }
+        
+        .modal-section h3 i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .modal-section p {
+            margin: 10px 0;
+            color: #DDD;
+        }
+        
+        .modal-section strong {
+            color: var(--light);
+        }
+        
+        .modal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--gray);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 150px;
+            justify-content: center;
+        }
+        
+        .modal-btn:hover {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .modal-btn i {
+            margin-right: 8px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--dark);
+            border-radius: 10px;
+            margin-top: 30px;
+            border: 1px dashed var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state p {
+            color: #AAA;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .clientes-container {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            .modal-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-users"></i> Gestión de Clientes</h1>
+            <a href="/volver" class="btn"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+
+        <h2 class="section-title"><i class="fas fa-list-check"></i> Clientes asignados</h2>
+
+        <% if (clientes.length > 0) { %>
+        <div class="clientes-container">
+            <% clientes.forEach(cliente => { %>
+            <div class="cliente-card" data-id="<%= cliente._id %>" data-nombre="<%= cliente.usuarioId.nombre + ' ' + cliente.usuarioId.apellido %>"
+                data-objetivo="<%= cliente.objetivo || 'No definido' %>"
+                data-nivel="<%= cliente.nivel || 'No definido' %>"
+                data-observaciones="<%= cliente.observaciones || 'Ninguna' %>">
+                <div class="cliente-img">
+                    <%= cliente.usuarioId.nombre.charAt(0).toUpperCase() %>
+                </div>
+                <div class="cliente-nombre"><%= cliente.usuarioId.nombre %></div>
+                <div class="cliente-info"><%= cliente.nivel || 'Sin nivel' %></div>
+            </div>
+            <% }) %>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal-bg" id="clienteModal">
+            <div class="modal-content">
+                <span class="modal-close" id="modalClose">&times;</span>
+                <div class="modal-header">
+                    <div class="cliente-img" id="modalImg"></div>
+                    <h2 id="modalNombre"></h2>
+                </div>
+
+                <div class="modal-section">
+                    <h3><i class="fas fa-info-circle"></i> Información del cliente</h3>
+                    <p><strong>Objetivo:</strong> <span id="modalObjetivo"></span></p>
+                    <p><strong>Nivel:</strong> <span id="modalNivel"></span></p>
+                    <p><strong>Observaciones:</strong> <span id="modalObservaciones"></span></p>
+                </div>
+
+                <div class="modal-section">
+                    <h3><i class="fas fa-cogs"></i> Gestión</h3>
+                    <div class="modal-actions">
+                        <a href="/entrenador/clients/:clienteId/rutinas" id="gestionarRutinas" class="modal-btn">
+                            <i class="fas fa-dumbbell"></i> Rutinas
+                        </a>
+                        <a href="/entrenador/clients/:clientId/dietas" id="gestionarDietas" class="modal-btn">
+                            <i class="fas fa-utensils"></i> Dietas
+                        </a>
+                        <a href="/entrenador/clients/:clientId/progreso" id="verProgreso" class="modal-btn">
+                            <i class="fas fa-chart-line"></i> Progreso
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <% } else { %>
+        <div class="empty-state">
+            <i class="fas fa-user-slash"></i>
+            <p>No tienes clientes asignados</p>
+        </div>
+        <% } %>
+    </div>
+
+    <script>
+        const modal = document.getElementById('clienteModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalNombre = document.getElementById('modalNombre');
+        const modalObjetivo = document.getElementById('modalObjetivo');
+        const modalNivel = document.getElementById('modalNivel');
+        const modalObservaciones = document.getElementById('modalObservaciones');
+        const modalImg = document.getElementById('modalImg');
+        const gestionarRutinasBtn = document.getElementById('gestionarRutinas');
+        const gestionarDietasBtn = document.getElementById('gestionarDietas');
+        const verProgresoBtn = document.getElementById('verProgreso');
+
+        document.querySelectorAll('.cliente-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const id = card.dataset.id;
+                const nombre = card.dataset.nombre;
+                const inicial = nombre.charAt(0).toUpperCase();
+                
+                modalNombre.textContent = nombre;
+                modalObjetivo.textContent = card.dataset.objetivo;
+                modalNivel.textContent = card.dataset.nivel;
+                modalObservaciones.textContent = card.dataset.observaciones;
+                modalImg.textContent = inicial;
+
+                // Ajusta las URLs según tus rutas en backend
+                gestionarRutinasBtn.href = `/entrenador/clients/${id}/rutinas`;
+                gestionarDietasBtn.href = `/entrenador/clients/${id}/dietas`;
+                verProgresoBtn.href = `/entrenador/clients/${id}/progreso`;
+
+                modal.classList.add('active');
+            });
+        });
+
+        modalClose.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // Cerrar modal al hacer click fuera del contenido
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>

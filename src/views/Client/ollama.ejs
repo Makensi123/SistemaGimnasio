@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Asistente IA (Ollama)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark: #1a1a1a;
+            --darker: #121212;
+            --gray: #2d2d2d;
+            --light: #f5f5f5;
+            --primary: #3498db;
+            --primary-hover: #2980b9;
+            --accent: #2ecc71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #ollamaForm {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        #promptInput {
+            resize: vertical;
+            padding: 1rem;
+            font-size: 1rem;
+            background: var(--gray);
+            border: 1px solid #444;
+            border-radius: 0.5rem;
+            color: var(--light);
+            min-height: 120px;
+            transition: border 0.3s;
+        }
+
+        #promptInput:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        #ollamaForm button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        #ollamaForm button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        #respuesta {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 1rem;
+            background: var(--gray);
+            border: 1px solid #444;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            white-space: pre-wrap;
+            min-height: 200px;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        #respuesta::before {
+            content: "Respuesta:";
+            position: absolute;
+            top: -0.75rem;
+            left: 1rem;
+            background: var(--darker);
+            padding: 0 0.5rem;
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1rem;
+            background: var(--accent);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            #ollamaForm,
+            #respuesta {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1><i class="fas fa-robot"></i> Asistente IA - Hola <%= usuario.nombre %>
+    </h1>
+
+    <form id="ollamaForm">
+        <textarea id="promptInput" rows="4" placeholder="Escribe tu mensaje aquí..."></textarea>
+        <button type="submit"><i class="fas fa-paper-plane"></i> Enviar</button>
+    </form>
+
+    <div id="respuesta"></div>
+
+    <script>
+        const form = document.getElementById('ollamaForm');
+        const promptInput = document.getElementById('promptInput');
+        const respuestaDiv = document.getElementById('respuesta');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            respuestaDiv.innerHTML = '<span class="typing-cursor"></span>';
+            const prompt = promptInput.value.trim();
+            if (!prompt) return;
+
+            const eventSource = new EventSource('/client/ollama/chat-stream?' + new URLSearchParams({ prompt }));
+
+            let buffer = '';
+            let writing = false;
+
+            eventSource.onmessage = function (event) {
+                if (event.data === '[DONE]') {
+                    eventSource.close();
+                    return;
+                }
+
+                buffer += event.data;
+                if (!writing) writeNextChar();
+            };
+
+            eventSource.onerror = function (error) {
+                console.error('Error:', error);
+                eventSource.close();
+            };
+
+            function writeNextChar() {
+                if (buffer.length === 0) {
+                    writing = false;
+                    return;
+                }
+                writing = true;
+                respuestaDiv.innerHTML = respuestaDiv.innerHTML.replace('<span class="typing-cursor"></span>', '');
+                respuestaDiv.innerHTML += buffer[0] + '<span class="typing-cursor"></span>';
+                buffer = buffer.slice(1);
+                setTimeout(writeNextChar, 20); // velocidad de escritura
+                respuestaDiv.scrollTop = respuestaDiv.scrollHeight;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Progreso físico de <%= cliente.usuarioId.nombre + ' ' + cliente.usuarioId.apellido %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --black: #121212;
+            --dark: #1E1E1E;
+            --gray: #2D2D2D;
+            --light: #F5F5F5;
+            --accent: #E74C3C;
+            --accent-hover: #C0392B;
+            --primary: #3498DB;
+            --success: #2ECC71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--black);
+            color: var(--light);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        h1 {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-back {
+            background-color: var(--gray);
+            color: white;
+        }
+        
+        .btn-back:hover {
+            background-color: #3a3a3a;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980B9;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--dark);
+            border-radius: 0.5rem;
+            border: 1px dashed var(--gray);
+            margin: 2rem 0;
+        }
+        
+        .empty-state i {
+            font-size: 2.5rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state p {
+            font-size: 1.1rem;
+            color: #AAA;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--dark);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        th {
+            background-color: var(--gray);
+            color: var(--light);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: rgba(255,255,255,0.03);
+        }
+        
+        .imc-cell {
+            font-weight: 500;
+        }
+        
+        .imc-low {
+            color: #F39C12;
+        }
+        
+        .imc-normal {
+            color: var(--success);
+        }
+        
+        .imc-high {
+            color: #E74C3C;
+        }
+        
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-chart-line"></i> Progreso físico de <%= cliente.usuarioId.nombre + ' ' + cliente.usuarioId.apellido %></h1>
+            <a href="/volver/volverClient" class="btn btn-back"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+
+        <% if (progresos.length === 0) { %>
+            <div class="empty-state">
+                <i class="fas fa-chart-line"></i>
+                <p>Este cliente aún no tiene registros de progreso físico.</p>
+            </div>
+        <% } else { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Peso (kg)</th>
+                        <th>Altura (cm)</th>
+                        <th>IMC</th>
+                        <th>Grasa Corporal (%)</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% progresos.forEach(p => { 
+                        let imcClass = '';
+                        if (p.imc < 18.5) imcClass = 'imc-low';
+                        else if (p.imc >= 18.5 && p.imc < 25) imcClass = 'imc-normal';
+                        else if (p.imc >= 25) imcClass = 'imc-high';
+                    %>
+                        <tr>
+                            <td><%= new Date(p.fechaRegistro).toLocaleDateString() %></td>
+                            <td><%= p.pesoKg %></td>
+                            <td><%= p.alturaCm %></td>
+                            <td class="imc-cell <%= imcClass %>"><%= p.imc.toFixed(1) %></td>
+                            <td><%= p.grasaCorporal ?? '-' %></td>
+                            <td><%= p.observaciones ?? '-' %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
+
+    </div>
+</body>
+
+</html>

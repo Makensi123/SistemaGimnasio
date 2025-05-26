@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro | PowerGym</title>
+    <style>
+        :root {
+            --black: #121212;
+            --dark: #1a1a1a;
+            --gray: #2a2a2a;
+            --light: #f5f5f5;
+            --accent: #e74c3c;
+            --accent-hover: #c0392b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(231, 76, 60, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(231, 76, 60, 0.1) 0%, transparent 50%);
+        }
+
+        .register-container {
+            background-color: var(--dark);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--gray);
+            margin: 20px;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--light);
+            font-weight: 600;
+        }
+
+        .register-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--light);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--gray);
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: var(--light);
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #777;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .additional-fields {
+            background-color: rgba(42, 42, 42, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .additional-fields .form-group {
+            margin-bottom: 15px;
+        }
+
+        .submit-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .login-link a:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .register-container {
+                padding: 30px 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <h1>Registro</h1>
+        </div>
+
+        <form class="register-form" action="/register" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" name="nombre" placeholder="Nombre" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="apellido" placeholder="Apellido" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="email" name="correo" placeholder="Correo electrónico" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" name="contrasenia" placeholder="Contraseña" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" name="telefono" placeholder="Teléfono" required>
+                </div>
+                <div class="form-group">
+                    <label for="fechaNacimiento">Fecha de nacimiento:</label>
+                    <input type="date" name="fechaNacimiento" id="fechaNacimiento" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <select name="genero" required>
+                    <option value="">Seleccione género</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select name="tipoUsuario" id="tipoUsuario" required onchange="mostrarCamposAdicionales(this.value)">
+                    <option value="">Seleccione tipo de usuario</option>
+                    <option value="cliente">Cliente</option>
+                    <option value="entrenador">Entrenador</option>
+                </select>
+            </div>
+
+            <!-- Campos adicionales para cliente -->
+            <div id="camposCliente" class="additional-fields" style="display: none;">
+                <h3>Información adicional (Cliente)</h3>
+                <div class="form-group">
+                    <input type="text" name="objetivo" placeholder="Objetivo (ej: Perder peso, Ganar masa muscular)">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="nivel" placeholder="Nivel (Principiante, Intermedio, Avanzado)">
+                </div>
+                <div class="form-group">
+                    <textarea name="observaciones" placeholder="Observaciones médicas o preferencias"></textarea>
+                </div>
+            </div>
+
+            <!-- Campos adicionales para entrenador -->
+            <div id="camposEntrenador" class="additional-fields" style="display: none;">
+                <h3>Información adicional (Entrenador)</h3>
+                <div class="form-group">
+                    <label for="tokenRegistro">Token de registro:</label>
+                    <input type="text" name="tokenRegistro" id="tokenRegistro"
+                        placeholder="Ingrese el token proporcionado">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="especialidad" placeholder="Especialidad (ej: Crossfit, Hipertrofia)">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="certificaciones" placeholder="Certificaciones (separadas por coma)">
+                </div>
+                <div class="form-group">
+                    <input type="number" name="experienciaAnios" placeholder="Años de experiencia">
+                </div>
+                <div class="form-group">
+                    <textarea name="descripcionPerfil" placeholder="Descripción de tu perfil profesional"></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Registrarse</button>
+
+            <div class="login-link">
+                <a href="/">¿Ya tienes una cuenta? Inicia sesión</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function mostrarCamposAdicionales(tipo) {
+            const clienteDiv = document.getElementById("camposCliente");
+            const entrenadorDiv = document.getElementById("camposEntrenador");
+
+            if (tipo === 'cliente') {
+                clienteDiv.style.display = 'block';
+                entrenadorDiv.style.display = 'none';
+                document.getElementById("tokenRegistro").removeAttribute("required");
+            } else if (tipo === 'entrenador') {
+                clienteDiv.style.display = 'none';
+                entrenadorDiv.style.display = 'block';
+                document.getElementById("tokenRegistro").setAttribute("required", true);
+            } else {
+                clienteDiv.style.display = 'none';
+                entrenadorDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>
