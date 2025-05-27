@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión | PowerGym</title>
+    <title>Iniciar Sesión | MARPE Fitness</title>
     <style>
         :root {
             --black: #121212;
@@ -42,6 +42,7 @@
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             border: 1px solid var(--gray);
+            position: relative;
         }
         
         .login-header {
@@ -126,6 +127,15 @@
             text-decoration: underline;
         }
         
+        .slogan {
+            text-align: center;
+            margin-top: 30px;
+            font-style: italic;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
         @media (max-width: 480px) {
             .login-container {
                 padding: 30px 20px;
@@ -138,7 +148,7 @@
 <body>
     <div class="login-container">
         <div class="login-header">
-            <h1>Iniciar Sesión</h1>
+            <h1>MARPE Fitness</h1>
         </div>
         
         <form class="login-form" action="/auth/login" method="POST">
@@ -157,6 +167,8 @@
             <div class="register-link">
                 <a href="/register">¿No tienes cuenta? Regístrate</a>
             </div>
+            
+            <div class="slogan">EL CAMBIO ES HOY</div>
         </form>
     </div>
 </body>

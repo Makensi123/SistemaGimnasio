@@ -203,11 +203,21 @@ router.get('/ollama', authCliente, (req, res) => {
 });
 
 router.get('/ollama/chat-stream', authCliente, async (req, res) => {
-    const prompt = req.query.prompt;
+    const promptUser = req.query.prompt;
 
-    if (!prompt) {
+    if (!promptUser) {
         return res.status(400).send('Falta el prompt');
     }
+
+    // Prompt estructurado para que el asistente responda como entrenador profesional
+    const systemPrompt = `
+Eres GymBot, un asistente virtual de gimnasio que responde como un entrenador profesional.
+Hablas con motivación, claridad y de forma organizada.
+Usa títulos, viñetas, emojis y separaciones claras para responder dudas sobre entrenamiento, nutrición o suplementos.
+
+Responde al siguiente mensaje de forma clara y ordenada:
+"${promptUser}"
+    `.trim();
 
     try {
         const response = await fetch('http://localhost:11434/api/generate', {
@@ -217,7 +227,7 @@ router.get('/ollama/chat-stream', authCliente, async (req, res) => {
             },
             body: JSON.stringify({
                 model: 'llama3',
-                prompt,
+                prompt: systemPrompt,
                 stream: true
             })
         });
@@ -252,44 +262,6 @@ router.get('/ollama/chat-stream', authCliente, async (req, res) => {
         res.status(500).send('Error al conectar con Ollama');
     }
 });
-/*
-router.get('/chat', authCliente, async (req, res) => {
-    const cliente = await Client.findOne({ usuarioId: req.session.usuario._id });
-    const entrenadorId = cliente?.entrenadorId?.toString();
-
-    const mensajes = await Mensaje.find({
-        $or: [
-            { remitenteId: req.session.usuario._id, destinatarioId: entrenadorId },
-            { remitenteId: entrenadorId, destinatarioId: req.session.usuario._id }
-        ]
-    }).sort({ createdAt: 1 });
-
-    res.render('client/chat', {
-        mensajes,
-        usuarioId: req.session.usuario._id.toString(),
-        destinatarioId: entrenadorId
-    });
-});
-// Enviar nuevo mensaje
-router.post('/chat/mensaje', authCliente, async (req, res) => {
-    try {
-        const { destinatarioId, contenido } = req.body;
-
-        const nuevoMensaje = new Mensaje({
-            remitenteId: req.session.usuario._id,
-            destinatarioId,
-            contenido
-        });
-
-        await nuevoMensaje.save();
-
-        res.status(200).json({ success: true, mensaje: nuevoMensaje });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, error: 'Error al enviar el mensaje' });
-    }
-});
-*/
 
 
 export default router;

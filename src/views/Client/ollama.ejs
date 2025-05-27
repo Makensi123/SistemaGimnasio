@@ -3,212 +3,401 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Asistente IA (Ollama)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymBot - Tu Entrenador Virtual</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --dark: #1a1a1a;
-            --darker: #121212;
-            --gray: #2d2d2d;
-            --light: #f5f5f5;
-            --primary: #3498db;
-            --primary-hover: #2980b9;
-            --accent: #2ecc71;
+            --black: #121212;
+            --dark: #1E1E1E;
+            --gray: #2D2D2D;
+            --light: #F5F5F5;
+            --accent: #E74C3C;
+            --primary: #3498DB;
+            --primary-hover: #2980B9;
+            --success: #2ECC71;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--darker);
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--black);
             color: var(--light);
-            padding: 2rem;
+            line-height: 1.6;
+            padding: 20px;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
-        h1 {
+        .header {
             text-align: center;
-            color: var(--primary);
             margin-bottom: 2rem;
-            font-size: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        #ollamaForm {
-            width: 100%;
-            max-width: 700px;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        #promptInput {
-            resize: vertical;
-            padding: 1rem;
-            font-size: 1rem;
-            background: var(--gray);
-            border: 1px solid #444;
-            border-radius: 0.5rem;
-            color: var(--light);
-            min-height: 120px;
-            transition: border 0.3s;
-        }
-
-        #promptInput:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-
-        #ollamaForm button {
-            padding: 0.75rem 1.5rem;
-            background-color: var(--primary);
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 15px;
         }
 
-        #ollamaForm button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-        }
-
-        #respuesta {
-            width: 100%;
-            max-width: 700px;
-            margin-top: 1rem;
-            background: var(--gray);
-            border: 1px solid #444;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            white-space: pre-wrap;
-            min-height: 200px;
-            line-height: 1.6;
-            position: relative;
-        }
-
-        #respuesta::before {
-            content: "Respuesta:";
-            position: absolute;
-            top: -0.75rem;
-            left: 1rem;
-            background: var(--darker);
-            padding: 0 0.5rem;
-            font-size: 0.8rem;
+        .header h1 {
             color: var(--primary);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .header i {
+            color: var(--accent);
+            font-size: 2.2rem;
+        }
+
+        .welcome {
+            color: var(--light);
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            background: var(--dark);
+            border: 1px solid var(--gray);
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--black);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-message {
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 85%;
+            line-height: 1.5;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-message {
+            background-color: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message {
+            background-color: var(--gray);
+            color: var(--light);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .bot-message strong {
+            color: var(--primary);
+        }
+
+        .chat-input-area {
+            display: flex;
+            border-top: 1px solid var(--gray);
+            background: var(--dark);
+            padding: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--gray);
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s;
+            background: var(--black);
+            color: var(--light);
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .chat-input::placeholder {
+            color: #777;
+        }
+
+        .send-btn {
+            margin-left: 10px;
+            padding: 12px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-weight: 600;
         }
 
-        .typing-cursor {
-            display: inline-block;
-            width: 8px;
-            height: 1rem;
-            background: var(--accent);
-            animation: blink 1s infinite;
-            vertical-align: middle;
-            margin-left: 2px;
+        .send-btn:hover {
+            background-color: var(--primary-hover);
         }
 
-        @keyframes blink {
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 15px;
+            background: var(--gray);
+            border-radius: 12px;
+            border: 1px solid var(--dark);
+            align-self: flex-start;
+            margin-bottom: 5px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--light);
+            border-radius: 50%;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+            opacity: 0.7;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingAnimation {
 
             0%,
             100% {
-                opacity: 1;
+                transform: translateY(0);
+                background: var(--light);
             }
 
             50% {
-                opacity: 0;
+                transform: translateY(-5px);
+                background: var(--primary);
             }
         }
 
+        .timestamp {
+            font-size: 0.75rem;
+            color: #777;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        /* Estilos para el markdown del bot */
+        .bot-message h2,
+        .bot-message h3 {
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .bot-message ul,
+        .bot-message ol {
+            margin: 10px 0 10px 20px;
+        }
+
+        .bot-message li {
+            margin-bottom: 5px;
+        }
+
+        .bot-message em {
+            color: var(--success);
+            font-style: italic;
+        }
+
+        /* Scrollbar personalizada */
+        .chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-box::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                padding: 1.5rem;
+            .chat-container {
+                height: 90vh;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
             }
 
-            h1 {
+            .header h1 {
                 font-size: 1.5rem;
             }
 
-            #ollamaForm,
-            #respuesta {
-                width: 100%;
+            .chat-message {
+                max-width: 90%;
             }
         }
     </style>
 </head>
 
 <body>
-    <h1><i class="fas fa-robot"></i> Asistente IA - Hola <%= usuario.nombre %>
-    </h1>
+    <div class="header">
+        <i class="fas fa-dumbbell"></i>
+        <h1>GymBot <span class="welcome">- Hola <%= usuario.nombre %></span></h1>
+    </div>
 
-    <form id="ollamaForm">
-        <textarea id="promptInput" rows="4" placeholder="Escribe tu mensaje aquí..."></textarea>
-        <button type="submit"><i class="fas fa-paper-plane"></i> Enviar</button>
-    </form>
+    <div class="chat-container">
+        <div id="chatBox" class="chat-box"></div>
 
-    <div id="respuesta"></div>
+        <form id="ollamaForm" class="chat-input-area">
+            <input type="text" id="promptInput" class="chat-input"
+                placeholder="Pregúntame sobre entrenamiento, nutrición o suplementos..." autocomplete="off" required />
+            <button type="submit" class="send-btn">
+                <span>Enviar</span>
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
 
     <script>
         const form = document.getElementById('ollamaForm');
         const promptInput = document.getElementById('promptInput');
-        const respuestaDiv = document.getElementById('respuesta');
+        const chatBox = document.getElementById('chatBox');
+
+        // Mostrar mensaje inicial del bot
+        window.onload = function () {
+            appendMessage(
+                "¡Hola! Soy GymBot, tu entrenador virtual. 😊\n\n" +
+                "Puedo ayudarte con:\n" +
+                "• Rutinas de ejercicio 💪\n" +
+                "• Planes de nutrición 🥗\n" +
+                "• Suplementos deportivos 🧪\n\n" +
+                "¿En qué puedo ayudarte hoy?",
+                'bot'
+            );
+        };
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            respuestaDiv.innerHTML = '<span class="typing-cursor"></span>';
             const prompt = promptInput.value.trim();
             if (!prompt) return;
+
+            appendMessage(prompt, 'user');
+            promptInput.value = '';
+
+            // Mostrar indicador de que el bot está escribiendo
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatBox.appendChild(typingIndicator);
+            chatBox.scrollTop = chatBox.scrollHeight;
 
             const eventSource = new EventSource('/client/ollama/chat-stream?' + new URLSearchParams({ prompt }));
 
             let buffer = '';
-            let writing = false;
+            let botMessageDiv = null;
 
             eventSource.onmessage = function (event) {
                 if (event.data === '[DONE]') {
                     eventSource.close();
+                    chatBox.removeChild(typingIndicator);
                     return;
                 }
 
+                if (!botMessageDiv) {
+                    botMessageDiv = document.createElement('div');
+                    botMessageDiv.className = 'bot-message';
+                    chatBox.insertBefore(botMessageDiv, typingIndicator);
+                }
+
                 buffer += event.data;
-                if (!writing) writeNextChar();
+                botMessageDiv.innerHTML = formatBotResponse(buffer);
+                chatBox.scrollTop = chatBox.scrollHeight;
             };
 
             eventSource.onerror = function (error) {
                 console.error('Error:', error);
                 eventSource.close();
-            };
+                chatBox.removeChild(typingIndicator);
 
-            function writeNextChar() {
-                if (buffer.length === 0) {
-                    writing = false;
-                    return;
+                if (!botMessageDiv) {
+                    appendMessage("Lo siento, hubo un error al procesar tu solicitud. Por favor, inténtalo de nuevo.", 'bot');
                 }
-                writing = true;
-                respuestaDiv.innerHTML = respuestaDiv.innerHTML.replace('<span class="typing-cursor"></span>', '');
-                respuestaDiv.innerHTML += buffer[0] + '<span class="typing-cursor"></span>';
-                buffer = buffer.slice(1);
-                setTimeout(writeNextChar, 20); // velocidad de escritura
-                respuestaDiv.scrollTop = respuestaDiv.scrollHeight;
+            };
+        });
+
+        function appendMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = `chat-message ${sender}-message`;
+            div.innerHTML = formatBotResponse(text);
+
+            // Agregar timestamp
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            div.innerHTML += `<div class="timestamp">${time}</div>`;
+
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function formatBotResponse(text) {
+            // Procesamiento básico de markdown
+            let formatted = escapeHtml(text)
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Negritas
+                .replace(/\*(.*?)\*/g, '<em>$1</em>') // Cursivas
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>') // Encabezados h3
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>') // Encabezados h2
+                .replace(/^\* (.*$)/gm, '<li>$1</li>') // Listas
+                .replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>') // Agrupar items de lista
+                .replace(/\n/g, '<br>'); // Saltos de línea
+
+            // Agrupar listas consecutivas
+            formatted = formatted.replace(/<\/ul><br><ul>/g, '');
+            return formatted;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Enfocar el input al cargar la página
+        promptInput.focus();
+
+        // Permitir enviar mensaje con Enter (sin Shift)
+        promptInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                form.dispatchEvent(new Event('submit'));
             }
         });
     </script>

@@ -8,12 +8,36 @@ import crypto from 'crypto';
 
 const router = express.Router();
 
-// Ruta protegida para el dashboard del administrador
-router.get('/dashboard', (req, res) => {
+router.get('/dashboard', async (req, res) => {
     if (!req.session.usuario || req.session.usuario.tipoUsuario !== 'administrador') {
         return res.redirect('/');
     }
-    res.render('admin/dashAdmin', { usuario: req.session.usuario });
+
+    try {
+        const cantidadClientes = await Client.countDocuments({ entrenadorId: { $ne: null } });
+        const clientesSinEntrenador = await Client.countDocuments({ $or: [{ entrenadorId: null }, { entrenadorId: { $exists: false } }] });
+        const cantidadEntrenadores = await Entrenador.countDocuments();
+        const cantidadTokensActivos = await Token.countDocuments({ usado: false });
+        const cantidadEjercicios = await Ejercicio.countDocuments();
+
+        res.render('admin/dashAdmin', {
+            usuario: req.session.usuario,
+            cantidadClientes,
+            cantidadEntrenadores,
+            clientesSinEntrenador,
+            cantidadTokensActivos,
+            cantidadEjercicios
+        });
+    } catch (error) {
+        console.error(error);
+        res.render('admin/dashAdmin', {
+            usuario: req.session.usuario,
+            cantidadClientes: 0,
+            cantidadEntrenadores: 0,
+            cantidadTokensActivos: 0,
+            cantidadEjercicios: 0
+        });
+    }
 });
 
 // Ruta para listar clientes y asignar entrenador

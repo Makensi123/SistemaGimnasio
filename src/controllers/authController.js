@@ -14,7 +14,7 @@ export const loginUsuario = async (req, res) => {
         } else if (usuario.tipoUsuario === 'administrador') {
             res.redirect('/admin/dashboard');
         } else {
-            res.redirect('/'); // fallback
+            res.redirect('/'); 
         }
     } catch (error) {
         res.status(401).send(error.message);

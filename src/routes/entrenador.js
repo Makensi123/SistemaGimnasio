@@ -18,10 +18,37 @@ function authEntrenador(req, res, next) {
 }
 
 // Dashboard entrenador (simple)
-router.get('/dashboard', authEntrenador, (req, res) => {
-    res.render('entrenador/dashboard', { usuario: req.session.usuario });
-});
+router.get('/dashboard', authEntrenador, async (req, res) => {
+    try {
+        const entrenador = await Entrenador.findOne({ usuarioId: req.session.usuario._id });
+        if (!entrenador) {
+            return res.status(404).send('Entrenador no encontrado');
+        }
 
+        // 2. Buscar los clientes asignados a ese entrenador
+        const cantidadClientes = await Client.countDocuments({ entrenadorId: entrenador._id });
+        // Contar rutinas creadas por este entrenador
+        const cantidadRutinas = await Rutina.countDocuments({ entrenadorId: entrenador._id });
+
+        // Contar dietas creadas por este entrenador
+        const cantidadDietas = await Dieta.countDocuments({ entrenadorId: entrenador._id });
+
+        res.render('entrenador/dashboard', {
+            usuario: req.session.usuario,
+            cantidadClientes,
+            cantidadRutinas,
+            cantidadDietas
+        });
+    } catch (error) {
+        console.error(error);
+        res.render('entrenador/dashboard', {
+            usuario: req.session.usuario,
+            cantidadClientes: 0,
+            cantidadRutinas: 0,
+            cantidadDietas: 0
+        });
+    }
+});
 // Mostrar clientes asignados al entrenador
 router.get('/clients', authEntrenador, async (req, res) => {
     try {
@@ -513,22 +540,5 @@ router.get('/chat/:clienteId', authEntrenador, async (req, res) => {
 
 
 
-/*
-router.post('/chat/:clienteId/enviar', authEntrenador, async (req, res) => {
-    try {
-        const clienteId = req.params.clienteId;
-        const mensaje = req.body.mensaje;
-
-        // Aquí guardarías el mensaje en la base de datos (a implementar)
-        console.log(`Mensaje para cliente ${clienteId}: ${mensaje}`);
-
-        // Rediriges de nuevo al chat o a la lista
-        res.redirect(`/entrenador/chat/${clienteId}`);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al enviar mensaje');
-    }
-});
-*/
 
 export default router;

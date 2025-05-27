@@ -271,11 +271,11 @@
                 <ul>
                     <li><a href="/entrenador/mensajes"><i class="fas fa-envelope"></i> Mensajes</a></li>
                 </ul>
-
-                <h3>Perfil</h3>
+                <!--<h3>Perfil</h3>
                 <ul>
                     <li><a href="/entrenador/perfil"><i class="fas fa-user-cog"></i> Mi Perfil</a></li>
-                </ul>
+                </ul>-->
+                
             </nav>
         </aside>
 
@@ -288,19 +288,22 @@
             <div class="stats-cards">
                 <div class="stat-card">
                     <h3><i class="fas fa-users"></i> Clientes Activos</h3>
-                    <div class="value">24</div>
+                    <div class="value">
+                        <%= cantidadClientes %>
+                    </div>
                 </div>
                 <div class="stat-card">
                     <h3><i class="fas fa-dumbbell"></i> Rutinas Creadas</h3>
-                    <div class="value">56</div>
+                    <div class="value">
+                        <%= cantidadRutinas %>
+                    </div>
                 </div>
+
                 <div class="stat-card">
                     <h3><i class="fas fa-utensils"></i> Planes Dietéticos</h3>
-                    <div class="value">32</div>
-                </div>
-                <div class="stat-card">
-                    <h3><i class="fas fa-envelope"></i> Mensajes Nuevos</h3>
-                    <div class="value">5</div>
+                    <div class="value">
+                        <%= cantidadDietas %>
+                    </div>
                 </div>
             </div>
 
@@ -325,13 +328,13 @@
                     </ul>
                 </section>
 
-                <!-- Perfil -->
-                <section class="section-card">
+                <!--<section class="section-card">
                     <h2><i class="fas fa-user"></i> Perfil</h2>
                     <ul>
                         <li><a href="/entrenador/perfil"><i class="fas fa-chevron-right"></i> Editar Perfil</a></li>
                     </ul>
-                </section>
+                </section> -->
+                
             </div>
         </main>
     </div>
